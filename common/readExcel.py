@@ -49,7 +49,8 @@ class readExcel():
                 cls.append(sheet.row_values(i))
         return cls
 
-    def write_excel_xls_append(path, value):
+    def write_excel_xls_append(self,path, value):
+
         index = len(value)  # 获取需要写入数据的行数
         workbook = xlrd.open_workbook(path)  # 打开工作簿
         sheets = workbook.sheet_names()  # 获取工作簿中的所有表格
@@ -64,20 +65,33 @@ class readExcel():
         print("xls格式表格【追加】写入数据成功！")
 
 
-    def writeExcel(self,xls_name, sheet_name,sheet_value):
-        if self.sheet_name is not None:
-
-            wb=xlwt.Workbook()
-            sheet=wb.add_sheet(sheet_name)
-            for i in range(len(sheet_value)):
-                for j in range(len(sheet_value[i])):
-                    sheet.write(i,j,sheet_value[i][j])
-
-            wb.save(self.EXCEL_PATH)
-            print("write date success!")
-            return True
-        else:
-            return False
+    def writeExcel(self,xls_name,sheet_value):
+        index = len(sheet_value)
+        workbook = xlrd.open_workbook(xls_name)  # 打开工作簿
+        sheets = workbook.sheet_names()  # 获取工作簿中的所有表格
+        worksheet = workbook.sheet_by_name(sheets[0])  # 获取工作簿中所有表格中的的第一个表格
+        rows_old = worksheet.nrows  # 获取表格中已存在的数据的行数
+        new_workbook = copy(workbook)  # 将xlrd对象拷贝转化为xlwt对象
+        new_worksheet = new_workbook.get_sheet(0)  # 获取转化后工作簿中的第一个表格
+        for i in range(0, index):
+            for j in range(0, len(sheet_value[i])):
+                new_worksheet.write(i + rows_old, j, sheet_value[i][j])  # 追加写入数据，注意是从i+rows_old行开始写入
+        new_workbook.save(path)  # 保存工作簿
+        print("xls格式表格【追加】写入数据成功！")
+        # if self.sheet_name is not None:
+        #     workbook = xlrd.open_workbook(xls_name)
+        #     sheets = workbook.sheet_names()
+        #     wb=xlwt.Workbook()
+        #     sheet=wb.add_sheet(sheet_name)
+        #     for i in range(len(sheet_value)):
+        #         for j in range(len(sheet_value[i])):
+        #             sheet.write(i,j,sheet_value[i][j])
+        #
+        #     wb.save(self.EXCEL_PATH)
+        #     print("write date success!")
+        #     return True
+        # else:
+        #     return False
 
 if __name__ == '__main__':#我们执行该文件测试一下是否可以正确获取Excel中的值
 
